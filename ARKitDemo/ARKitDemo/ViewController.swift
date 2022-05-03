@@ -22,6 +22,8 @@ class ViewController: UIViewController {
     
     var lastNode: SCNNode?
     
+    var isNode = false
+    
     
 // MARK: - Load View Override
     
@@ -34,7 +36,7 @@ class ViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        reloadConfiguration(false)
+        configureARSession(isReset: false)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -54,48 +56,32 @@ class ViewController: UIViewController {
 //        reloadBut.imageEdgeInsets = UIEdgeInsets(top: 30, left: 30, bottom: 30, right: 30)
         reloadBut.tintColor = .gray
         reloadBut.addTarget(self, action: #selector(onClickReload), for: .touchUpInside)
-        
-        if #available(iOS 11.0, *) {
-            let contraints = [
-                reloadBut.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 10),
-                reloadBut.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20),
-                reloadBut.heightAnchor.constraint(equalToConstant: 50),
-                reloadBut.widthAnchor.constraint(equalToConstant: 50)
-            ]
-            NSLayoutConstraint.activate(contraints)
-        } else {
-            // Fallback on earlier versions
-        }
+        let contraints = [
+            reloadBut.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            reloadBut.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20),
+            reloadBut.heightAnchor.constraint(equalToConstant: 50),
+            reloadBut.widthAnchor.constraint(equalToConstant: 50)
+        ]
+        NSLayoutConstraint.activate(contraints)
     }
     
     func setupSenceView() {
-        if #available(iOS 11.0, *) {
-            scenceView = ARSCNView.init(frame: self.view.frame)
-        } else {
-            // Fallback on earlier versions
-        }
+        scenceView = ARSCNView.init(frame: self.view.frame)
         self.view.addSubview(scenceView)
         self.scenceView.translatesAutoresizingMaskIntoConstraints = false
+        let contraints = [
+            scenceView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            scenceView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            scenceView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+            scenceView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
+        ]
+        NSLayoutConstraint.activate(contraints)
         
-        if #available(iOS 11.0, *) {
-            let contraints = [
-                scenceView.topAnchor.constraint(equalTo: self.view.topAnchor),
-                scenceView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
-                scenceView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
-                scenceView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor)
-            ]
-            NSLayoutConstraint.activate(contraints)
-        } else {
-            // Fallback on earlier versions
-        }
         // Show statistics such as fps and timing information
 //        scenceView.showsStatistics = true
         scenceView.autoenablesDefaultLighting = true
         scenceView.delegate = self
-    }
-    
-    func reloadConfiguration(_ reset: Bool) {
-        self.senceRun()
+        scenceView.session.delegate = self
     }
     
 
@@ -110,19 +96,19 @@ class ViewController: UIViewController {
     }
     
     func addNodeToParentNode(_ node: SCNNode, to parentNode: SCNNode) {
-//        if let lastNode = lastNode {
-//            let lastPosition = lastNode.position
-//            let newPosition = node.position
-//
-//            let x = lastPosition.x - newPosition.x
-//            let y = lastPosition.y - newPosition.y
-//            let z = lastPosition.z - newPosition.z
-//
-//            let distanceSquare = x * x + y * y + z * z
-//            let minimumDistanceSquare = minimumDistance * minimumDistance
-//
-//            guard minimumDistanceSquare < distanceSquare else { return }
-//        }
+        if let lastNode = lastNode {
+            let lastPosition = lastNode.position
+            let newPosition = node.position
+
+            let x = lastPosition.x - newPosition.x
+            let y = lastPosition.y - newPosition.y
+            let z = lastPosition.z - newPosition.z
+
+            let distanceSquare = x * x + y * y + z * z
+            let minimumDistanceSquare = minimumDistance * minimumDistance
+
+            guard minimumDistanceSquare < distanceSquare else { return }
+        }
         
         let clonedNode = node.clone()
         
@@ -130,7 +116,6 @@ class ViewController: UIViewController {
         
         objectNode.append(clonedNode)
         
-        // Add the cloned node to the scene
         parentNode.addChildNode(clonedNode)
     }
     
@@ -140,22 +125,24 @@ class ViewController: UIViewController {
 
 extension ViewController {
     
-    func setNodeModel() -> SCNNode {
+    func setNodeModel() -> SCNNode? {
         let name = resourceFolder + "/" + "arrow1.scn"
         if let sence = SCNScene(named: name) {
             return sence.rootNode
         }
-        return SCNNode.init()
+        return nil
     }
     
-    func senceRun() {
-        if #available(iOS 11.0, *) {
-            let option = ARSession.RunOptions.removeExistingAnchors
-            configuration.planeDetection = .horizontal
-            scenceView.session.run(configuration, options: option)
-        } else {
-            // Fallback on earlier versions
+    func configureARSession(isReset:Bool, runOptions: ARSession.RunOptions = []) {
+        if (isReset) {
+            self.objectNode.forEach { node in
+                node.removeFromParentNode()
+            }
+            objectNode.removeAll()
         }
+        
+        configuration.planeDetection = .horizontal
+        scenceView.session.run(configuration, options: runOptions)
     }
     
     func sencePause() {
@@ -163,8 +150,7 @@ extension ViewController {
     }
     
     func resetScene() {
-        objectNode.removeAll()
-        reloadConfiguration(true)
+        configureARSession(isReset:true, runOptions: ARSession.RunOptions.removeExistingAnchors)
         dismiss(animated: true)
     }
 }
