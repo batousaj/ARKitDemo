@@ -9,6 +9,17 @@ import Foundation
 
 let resourceFolder = "art.scnassets"
 
+enum LineWith: Float {
+    case small = 0.006
+    case medium = 0.011
+    case large = 0.020
+}
+
+enum ViewMode {
+    case DRAWING
+    case OBJECT
+}
+
 enum Arrow: String {
     case Arrow1 = "Arrow1"
     case Arrow2 = "Arrow2"

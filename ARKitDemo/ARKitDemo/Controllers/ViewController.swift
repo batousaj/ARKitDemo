@@ -10,19 +10,38 @@ import ARKit
 
 class ViewController: UIViewController {
     
+    // SenceView Configuration
     var scenceView:ARSCNView!
     
     var configuration = ARWorldTrackingConfiguration()
     
+    // Model Arrow Node
     var objectNode = [SCNNode]()
-    
-    var reloadBut = UIButton()
-    
-    let minimumDistance:Float = 0.05
     
     var lastNode: SCNNode?
     
+    var hitNode: SCNNode?
+    
+    // Drawing line
+    var touchPoint: CGPoint = .zero
+    
+    var strokes = [Stroke]()
+    
+    // options tool
+    var modeTrack = UISwitch()
+    
+    var modeLabel = UILabel()
+    
+    var reloadBut = UIButton()
+    
+    //private variable
     var isNode = false
+    
+    let minimumDistance:Float = 0.05
+    
+    var strokeSize: LineWith = .small
+    
+    var mode:ViewMode!
     
     
 // MARK: - Load View Override
@@ -32,6 +51,7 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view.
         self.setupSenceView()
         self.setupControlButton()
+        self.setupSwitch()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -42,6 +62,18 @@ class ViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
     }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Release any cached data, images, etc that aren't in use.
+        resetTouches()
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        resetTouches()
+    }
+    
+// MARK: - View State
     
     func setupControlButton() {
         reloadBut.translatesAutoresizingMaskIntoConstraints = false
@@ -65,6 +97,37 @@ class ViewController: UIViewController {
         NSLayoutConstraint.activate(contraints)
     }
     
+    func setupSwitch() {
+        self.view.addSubview(self.modeTrack)
+        self.modeTrack.translatesAutoresizingMaskIntoConstraints = false
+        self.modeTrack.setOn(false, animated: true)
+        self.modeTrack.addTarget(self, action: #selector(onTapSwitch), for: .valueChanged)
+        
+        let constraints = [
+            modeTrack.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 25),
+            modeTrack.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
+            modeTrack.heightAnchor.constraint(equalToConstant: 50),
+            modeTrack.widthAnchor.constraint(equalToConstant: 50)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+        
+        self.view.addSubview(self.modeLabel)
+        self.modeLabel.translatesAutoresizingMaskIntoConstraints = false
+        self.modeLabel.font = .boldSystemFont(ofSize: 20)
+        self.modeLabel.textColor = .systemBlue
+        self.isDrawing()
+        
+        let constraints1 = [
+            modeLabel.topAnchor.constraint(equalTo: self.modeTrack.bottomAnchor, constant: 5),
+            modeLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
+            modeLabel.heightAnchor.constraint(equalToConstant: 50),
+            modeLabel.widthAnchor.constraint(equalToConstant: 150)
+        ]
+        
+        NSLayoutConstraint.activate(constraints1)
+    }
+    
     func setupSenceView() {
         scenceView = ARSCNView.init(frame: self.view.frame)
         self.view.addSubview(scenceView)
@@ -77,46 +140,15 @@ class ViewController: UIViewController {
         ]
         NSLayoutConstraint.activate(contraints)
         
+        hitNode = SCNNode()
+        hitNode!.position = SCNVector3Make(0, 0, -0.17)
+        scenceView.pointOfView?.addChildNode(hitNode!)
+        
         // Show statistics such as fps and timing information
 //        scenceView.showsStatistics = true
         scenceView.autoenablesDefaultLighting = true
         scenceView.delegate = self
         scenceView.session.delegate = self
-    }
-    
-
-// MARK: - Sence Node Handler
-    
-    func addNode(_ node: SCNNode, at point: CGPoint) {
-        guard let hitResult = scenceView.hitTest(point, types: .existingPlaneUsingExtent).first else { return }
-        guard let anchor = hitResult.anchor as? ARPlaneAnchor, anchor.alignment == .horizontal else { return }
-        
-        node.simdTransform = hitResult.worldTransform
-        addNodeToParentNode(node, to: scenceView.scene.rootNode)
-    }
-    
-    func addNodeToParentNode(_ node: SCNNode, to parentNode: SCNNode) {
-        if let lastNode = lastNode {
-            let lastPosition = lastNode.position
-            let newPosition = node.position
-
-            let x = lastPosition.x - newPosition.x
-            let y = lastPosition.y - newPosition.y
-            let z = lastPosition.z - newPosition.z
-
-            let distanceSquare = x * x + y * y + z * z
-            let minimumDistanceSquare = minimumDistance * minimumDistance
-
-            guard minimumDistanceSquare < distanceSquare else { return }
-        }
-        
-        let clonedNode = node.clone()
-        
-        lastNode = clonedNode
-        
-        objectNode.append(clonedNode)
-        
-        parentNode.addChildNode(clonedNode)
     }
     
 }
@@ -150,7 +182,25 @@ extension ViewController {
     }
     
     func resetScene() {
+        isNode = false
+        resetTouches()
         configureARSession(isReset:true, runOptions: ARSession.RunOptions.removeExistingAnchors)
         dismiss(animated: true)
+    }
+    
+    func resetTouches() {
+        touchPoint = .zero
+    }
+    
+    func isDrawing() {
+        print("Mode change to Drawing")
+        self.modeLabel.text = "Drawing"
+        self.mode = .DRAWING
+    }
+    
+    func isObject() {
+        print("Mode change to Object Tracking")
+        self.modeLabel.text = "Object"
+        self.mode = .OBJECT
     }
 }

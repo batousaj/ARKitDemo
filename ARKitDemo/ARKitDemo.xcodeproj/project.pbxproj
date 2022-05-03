@@ -8,8 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		B164917A2817CA8A008B7602 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = B16491792817CA8A008B7602 /* art.scnassets */; };
-		B164917C2817D3B6008B7602 /* ViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B164917B2817D3B5008B7602 /* ViewController+Extension.swift */; };
+		B164917C2817D3B6008B7602 /* ViewController+ARSCNViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B164917B2817D3B5008B7602 /* ViewController+ARSCNViewDelegate.swift */; };
 		B164917E28186CC0008B7602 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = B164917D28186CC0008B7602 /* Model.swift */; };
+		B175054F282148BB0009BDD3 /* ViewController+Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = B175054E282148BB0009BDD3 /* ViewController+Action.swift */; };
+		B1750554282153AC0009BDD3 /* ViewController + Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1750553282153AC0009BDD3 /* ViewController + Node.swift */; };
+		B1750556282162D60009BDD3 /* Stroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1750555282162D60009BDD3 /* Stroke.swift */; };
+		B175055C282163630009BDD3 /* LineGeometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1750558282163630009BDD3 /* LineGeometry.swift */; };
+		B175055D282163630009BDD3 /* BiquadFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1750559282163630009BDD3 /* BiquadFilter.swift */; };
+		B175055E282163630009BDD3 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = B175055A282163630009BDD3 /* Shaders.metal */; };
 		B181559B28153E38004B9A7C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B181559A28153E38004B9A7C /* AppDelegate.swift */; };
 		B181559D28153E38004B9A7C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B181559C28153E38004B9A7C /* SceneDelegate.swift */; };
 		B181559F28153E38004B9A7C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B181559E28153E38004B9A7C /* ViewController.swift */; };
@@ -40,8 +46,16 @@
 
 /* Begin PBXFileReference section */
 		B16491792817CA8A008B7602 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
-		B164917B2817D3B5008B7602 /* ViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Extension.swift"; sourceTree = "<group>"; };
+		B164917B2817D3B5008B7602 /* ViewController+ARSCNViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+ARSCNViewDelegate.swift"; sourceTree = "<group>"; };
 		B164917D28186CC0008B7602 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		B175054E282148BB0009BDD3 /* ViewController+Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Action.swift"; sourceTree = "<group>"; };
+		B1750553282153AC0009BDD3 /* ViewController + Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController + Node.swift"; sourceTree = "<group>"; };
+		B1750555282162D60009BDD3 /* Stroke.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stroke.swift; sourceTree = "<group>"; };
+		B1750558282163630009BDD3 /* LineGeometry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LineGeometry.swift; sourceTree = "<group>"; };
+		B1750559282163630009BDD3 /* BiquadFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BiquadFilter.swift; sourceTree = "<group>"; };
+		B175055A282163630009BDD3 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		B175055B282163630009BDD3 /* ShaderTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
+		B175055F28216CAD0009BDD3 /* ARKitDemo-Bridge-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ARKitDemo-Bridge-Header.h"; sourceTree = "<group>"; };
 		B181559728153E38004B9A7C /* ARKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B181559A28153E38004B9A7C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B181559C28153E38004B9A7C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -82,6 +96,37 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B175055028214B680009BDD3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B164917D28186CC0008B7602 /* Model.swift */,
+				B1750555282162D60009BDD3 /* Stroke.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		B175055128214B8B0009BDD3 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				B181559E28153E38004B9A7C /* ViewController.swift */,
+				B175054E282148BB0009BDD3 /* ViewController+Action.swift */,
+				B164917B2817D3B5008B7602 /* ViewController+ARSCNViewDelegate.swift */,
+				B1750553282153AC0009BDD3 /* ViewController + Node.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		B1750557282163630009BDD3 /* LineWrap */ = {
+			isa = PBXGroup;
+			children = (
+				B1750558282163630009BDD3 /* LineGeometry.swift */,
+				B1750559282163630009BDD3 /* BiquadFilter.swift */,
+				B175055A282163630009BDD3 /* Shaders.metal */,
+				B175055B282163630009BDD3 /* ShaderTypes.h */,
+			);
+			path = LineWrap;
+			sourceTree = "<group>";
+		};
 		B181558E28153E38004B9A7C = {
 			isa = PBXGroup;
 			children = (
@@ -105,12 +150,13 @@
 		B181559928153E38004B9A7C /* ARKitDemo */ = {
 			isa = PBXGroup;
 			children = (
-				B164917D28186CC0008B7602 /* Model.swift */,
 				B16491792817CA8A008B7602 /* art.scnassets */,
+				B175055128214B8B0009BDD3 /* Controllers */,
+				B175055028214B680009BDD3 /* Model */,
+				B1750557282163630009BDD3 /* LineWrap */,
 				B181559A28153E38004B9A7C /* AppDelegate.swift */,
+				B175055F28216CAD0009BDD3 /* ARKitDemo-Bridge-Header.h */,
 				B181559C28153E38004B9A7C /* SceneDelegate.swift */,
-				B181559E28153E38004B9A7C /* ViewController.swift */,
-				B164917B2817D3B5008B7602 /* ViewController+Extension.swift */,
 				B18155A028153E38004B9A7C /* Main.storyboard */,
 				B18155A328153E3A004B9A7C /* Assets.xcassets */,
 				B18155A528153E3A004B9A7C /* LaunchScreen.storyboard */,
@@ -269,10 +315,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				B164917E28186CC0008B7602 /* Model.swift in Sources */,
-				B164917C2817D3B6008B7602 /* ViewController+Extension.swift in Sources */,
+				B164917C2817D3B6008B7602 /* ViewController+ARSCNViewDelegate.swift in Sources */,
+				B1750554282153AC0009BDD3 /* ViewController + Node.swift in Sources */,
+				B175054F282148BB0009BDD3 /* ViewController+Action.swift in Sources */,
 				B181559F28153E38004B9A7C /* ViewController.swift in Sources */,
+				B175055D282163630009BDD3 /* BiquadFilter.swift in Sources */,
 				B181559B28153E38004B9A7C /* AppDelegate.swift in Sources */,
 				B181559D28153E38004B9A7C /* SceneDelegate.swift in Sources */,
+				B175055E282163630009BDD3 /* Shaders.metal in Sources */,
+				B1750556282162D60009BDD3 /* Stroke.swift in Sources */,
+				B175055C282163630009BDD3 /* LineGeometry.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -466,6 +518,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.softfoundry.ARKitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "ARKitDemo-Bridge-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -495,6 +548,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.softfoundry.ARKitDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "ARKitDemo-Bridge-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
