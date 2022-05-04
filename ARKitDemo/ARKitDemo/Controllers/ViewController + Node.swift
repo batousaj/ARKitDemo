@@ -14,10 +14,10 @@ extension ViewController {
 // MARK: - Sence Node Handler
         
     func addNode(_ node: SCNNode, at point: CGPoint) {
-        guard let hitResult = scenceView.hitTest(point, types: .existingPlaneUsingExtent).first else { return }
-        guard let anchor = hitResult.anchor as? ARPlaneAnchor, anchor.alignment == .horizontal else { return }
-            
-        node.simdTransform = hitResult.worldTransform
+//        guard let hitResult = scenceView.hitTest(point, types: .existingPlaneUsingExtent).first else { return }
+//        guard let anchor = hitResult.anchor as? ARPlaneAnchor, anchor.alignment == .horizontal else { return }
+//
+//        node.simdTransform = hitResult.worldTransform
         addNodeToParentNode(node, to: scenceView.scene.rootNode)
     }
         
@@ -48,16 +48,8 @@ extension ViewController {
 // MARK: - Stroke Code
     
     func getStroke(for anchor: ARAnchor) -> Stroke? {
-        var matchStrokeArray = strokes.filter { (stroke) -> Bool in
+        let matchStrokeArray = strokes.filter { (stroke) -> Bool in
             return stroke.anchor == anchor
-        }
-
-        if matchStrokeArray.count == 0 {
-            for (_, stroke) in partnerStrokes {
-                if stroke.anchor == anchor {
-                    matchStrokeArray.append(stroke)
-                }
-            }
         }
 
         return matchStrokeArray.first
@@ -65,27 +57,16 @@ extension ViewController {
 
     /// Checks user's strokes for match, then partner's strokes
     func getStroke(for node: SCNNode) -> Stroke? {
-        var matchStrokeArray = strokes.filter { (stroke) -> Bool in
+        let matchStrokeArray = strokes.filter { (stroke) -> Bool in
             return stroke.node == node
-        }
-
-        if matchStrokeArray.count == 0 {
-            for (_, stroke) in partnerStrokes {
-                if stroke.node == node {
-                    matchStrokeArray.append(stroke)
-                }
-            }
         }
 
         return matchStrokeArray.first
     }
     
     func makeAnchor(at point: CGPoint) -> ARAnchor? {
-        guard let hitNode = hitNode else {
-            return nil
-        }
-        let projectedOrigin = scenceView.projectPoint(hitNode.worldPosition)
-        let offset = scenceView.unprojectPoint(SCNVector3Make(Float(point.x), Float(point.y), projectedOrigin.z))
+        
+        let offset = unprojectedPosition(touch: point)
 
         var blankTransform = matrix_float4x4(1)
 //        var transform = hitNode.simdWorldTransform
@@ -100,7 +81,7 @@ extension ViewController {
         guard let _ = stroke.points.last, let strokeNode = stroke.node else {
             return
         }
-        let offset = unprojectedPosition(for: stroke, at: touchPoint)
+        let offset = unprojectedPosition(touch: touchPoint)
         let newPoint = strokeNode.convertPosition(offset, from: scenceView.scene.rootNode)
 
         stroke.lineWidth = strokeSize.rawValue
@@ -128,7 +109,7 @@ extension ViewController {
     }
 
     // Stroke Helper Methods
-    func unprojectedPosition(for stroke: Stroke, at touch: CGPoint) -> SCNVector3 {
+    func unprojectedPosition(touch: CGPoint) -> SCNVector3 {
         guard let hitNode = self.hitNode else {
             return SCNVector3Zero
         }
@@ -137,5 +118,13 @@ extension ViewController {
         let offset = scenceView.unprojectPoint(SCNVector3Make(Float(touch.x), Float(touch.y), projectedOrigin.z))
 
         return offset
+    }
+    
+    func clearAllStrokes() {
+        for stroke in self.strokes {
+            if let anchor = stroke.anchor {
+                self.scenceView.session.remove(anchor: anchor)
+            }
+        }
     }
 }

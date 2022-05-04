@@ -116,7 +116,7 @@ class ViewController: UIViewController {
         self.modeLabel.translatesAutoresizingMaskIntoConstraints = false
         self.modeLabel.font = .boldSystemFont(ofSize: 20)
         self.modeLabel.textColor = .systemBlue
-        self.isDrawing()
+        self.setDrawing()
         
         let constraints1 = [
             modeLabel.topAnchor.constraint(equalTo: self.modeTrack.bottomAnchor, constant: 5),
@@ -183,6 +183,7 @@ extension ViewController {
     
     func resetScene() {
         isNode = false
+        self.clearAllStrokes()
         resetTouches()
         configureARSession(isReset:true, runOptions: ARSession.RunOptions.removeExistingAnchors)
         dismiss(animated: true)
@@ -192,15 +193,22 @@ extension ViewController {
         touchPoint = .zero
     }
     
-    func isDrawing() {
+    func setDrawing() {
         print("Mode change to Drawing")
         self.modeLabel.text = "Drawing"
         self.mode = .DRAWING
     }
     
-    func isObject() {
+    func setObject() {
         print("Mode change to Object Tracking")
         self.modeLabel.text = "Object"
         self.mode = .OBJECT
+    }
+    
+    func isObject() -> Bool {
+        if (self.mode == .OBJECT) {
+            return true
+        }
+        return false
     }
 }

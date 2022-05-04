@@ -24,12 +24,16 @@ extension ViewController {
             case .OBJECT :
                 self.lastNode = nil
                 
-                guard let node = self.setNodeModel() else {
-                    return;
+//                guard let node = self.setNodeModel() else {
+//                    return;
+//                }
+            
+                if let anchor = makeAnchor(at:touchPoint) {
+                    scenceView.session.add(anchor: anchor)
                 }
-                if (isNode) {
-                    self.addNode(node, at: touchPoint)
-                }
+//                if (isNode) {
+//                    self.addNode(node, at: touchPoint)
+//                }
                 break;
             case .DRAWING :
                 // begin a new stroke
@@ -87,9 +91,9 @@ extension ViewController {
 
     @objc func onTapSwitch(_ sender: UISwitch) {
         if sender.isOn {
-            self.isObject()
+            self.setObject()
         } else {
-            self.isDrawing()
+            self.setDrawing()
         }
     }
 }

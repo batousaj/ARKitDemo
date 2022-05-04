@@ -55,7 +55,7 @@
 		B1750559282163630009BDD3 /* BiquadFilter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BiquadFilter.swift; sourceTree = "<group>"; };
 		B175055A282163630009BDD3 /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
 		B175055B282163630009BDD3 /* ShaderTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
-		B175055F28216CAD0009BDD3 /* ARKitDemo-Bridge-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ARKitDemo-Bridge-Header.h"; sourceTree = "<group>"; };
+		B1750560282263C60009BDD3 /* ARKitDemo-Bridge-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ARKitDemo-Bridge-Header.h"; sourceTree = SOURCE_ROOT; };
 		B181559728153E38004B9A7C /* ARKitDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARKitDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B181559A28153E38004B9A7C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B181559C28153E38004B9A7C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -155,7 +155,7 @@
 				B175055028214B680009BDD3 /* Model */,
 				B1750557282163630009BDD3 /* LineWrap */,
 				B181559A28153E38004B9A7C /* AppDelegate.swift */,
-				B175055F28216CAD0009BDD3 /* ARKitDemo-Bridge-Header.h */,
+				B1750560282263C60009BDD3 /* ARKitDemo-Bridge-Header.h */,
 				B181559C28153E38004B9A7C /* SceneDelegate.swift */,
 				B18155A028153E38004B9A7C /* Main.storyboard */,
 				B18155A328153E3A004B9A7C /* Assets.xcassets */,
