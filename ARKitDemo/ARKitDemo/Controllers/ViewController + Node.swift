@@ -22,19 +22,19 @@ extension ViewController {
     }
         
     func addNodeToParentNode(_ node: SCNNode, to parentNode: SCNNode) {
-        if let lastNode = lastNode {
-            let lastPosition = lastNode.position
-            let newPosition = node.position
-
-            let x = lastPosition.x - newPosition.x
-            let y = lastPosition.y - newPosition.y
-            let z = lastPosition.z - newPosition.z
-
-            let distanceSquare = x * x + y * y + z * z
-            let minimumDistanceSquare = minimumDistance * minimumDistance
-
-            guard minimumDistanceSquare < distanceSquare else { return }
-        }
+//        if let lastNode = lastNode {
+//            let lastPosition = lastNode.position
+//            let newPosition = node.position
+//
+//            let x = lastPosition.x - newPosition.x
+//            let y = lastPosition.y - newPosition.y
+//            let z = lastPosition.z - newPosition.z
+//
+//            let distanceSquare = x * x + y * y + z * z
+//            let minimumDistanceSquare = minimumDistance * minimumDistance
+//
+//            guard minimumDistanceSquare < distanceSquare else { return }
+//        }
             
         let clonedNode = node.clone()
             

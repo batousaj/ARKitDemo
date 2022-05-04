@@ -34,6 +34,8 @@ class ViewController: UIViewController {
     
     var reloadBut = UIButton()
     
+    var slideWith = UISlider()
+    
     //private variable
     var isNode = false
     
@@ -42,6 +44,8 @@ class ViewController: UIViewController {
     var strokeSize: LineWith = .small
     
     var mode:ViewMode!
+    
+//    var zoom:UIPinchGestureRecognizer!
     
     
 // MARK: - Load View Override
@@ -52,6 +56,9 @@ class ViewController: UIViewController {
         self.setupSenceView()
         self.setupControlButton()
         self.setupSwitch()
+        self.setupSlider()
+//        self.zoom = UIPinchGestureRecognizer.init(target: self, action: #selector(handlePinch))
+//        self.view.addGestureRecognizer(self.zoom)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -149,6 +156,21 @@ class ViewController: UIViewController {
         scenceView.autoenablesDefaultLighting = true
         scenceView.delegate = self
         scenceView.session.delegate = self
+    }
+    
+    func setupSlider() {
+        self.view.addSubview(self.slideWith)
+        self.slideWith.translatesAutoresizingMaskIntoConstraints = false
+        self.slideWith.addTarget(self, action: #selector(onSliderChangeValue), for: .valueChanged)
+        slideWith.transform = slideWith.transform.rotated(by: CGFloat(1.5 * Float.pi))
+        
+        let contraints = [
+            slideWith.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 300),
+            slideWith.leadingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -140),
+            slideWith.widthAnchor.constraint(equalToConstant: 200),
+            slideWith.heightAnchor.constraint(equalToConstant: 50)
+        ]
+        NSLayoutConstraint.activate(contraints)
     }
     
 }
