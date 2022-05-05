@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ARKit
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -14,6 +15,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        if #available(iOS 14.0, *) {
+            guard ARWorldTrackingConfiguration.supportsFrameSemantics(.sceneDepth) else {
+                fatalError("Scene depth is not supported on this device.")
+            }
+            guard ARWorldTrackingConfiguration.supportsFrameSemantics(.personSegmentationWithDepth) else {
+                fatalError("People occlusion is not supported on this device.")
+            }
+            guard ARWorldTrackingConfiguration.supportsFrameSemantics(.smoothedSceneDepth) else {
+                fatalError("Smooth scene depth is not supported on this device.")
+            }
+        } else {
+            // Fallback on earlier versions
+            fatalError("Do not support AR Tracking in ios 14 below")
+        }
         return true
     }
 

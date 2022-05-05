@@ -45,7 +45,6 @@ class ViewController: UIViewController {
     
     var mode:ViewMode!
     
-//    var zoom:UIPinchGestureRecognizer!
     
     
 // MARK: - Load View Override
@@ -57,8 +56,6 @@ class ViewController: UIViewController {
         self.setupControlButton()
         self.setupSwitch()
         self.setupSlider()
-//        self.zoom = UIPinchGestureRecognizer.init(target: self, action: #selector(handlePinch))
-//        self.view.addGestureRecognizer(self.zoom)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -92,7 +89,6 @@ class ViewController: UIViewController {
         } else {
             // Fallback on earlier versions
         }
-//        reloadBut.imageEdgeInsets = UIEdgeInsets(top: 30, left: 30, bottom: 30, right: 30)
         reloadBut.tintColor = .gray
         reloadBut.addTarget(self, action: #selector(onClickReload), for: .touchUpInside)
         let contraints = [
