@@ -99,23 +99,15 @@ extension ViewController {
     
     @objc func onSliderChangeValue(_ slider: UISlider) {
         print("tHIEN vi: %d",slider.value)
+//        let pinchScale = round(recognizer.scale * 1000)/1000000
         let node_arm = lastNode
         node_arm?.runAction(.customAction(duration: 0, action: { node, progress in
             DispatchQueue.main.async {
                 node.physicsBody = nil
-                node.scale = SCNVector3(x: Float(slider.value), y: Float(slider.value - 20), z: Float(-0.5))
+                node.scale = SCNVector3(x: Float(slider.value), y: Float(slider.value), z: Float(slider.value))
             }
         }))
     }
-    
-//    @objc func handlePinch(from recognizer: UIPinchGestureRecognizer){
-//        let pinchScale = round(recognizer.scale * 1000)/1000000
-//        let node_arm = lastNode
-//        node_arm?.runAction(.customAction(duration: 0, action: { node, progress in
-//            node.physicsBody = nil
-//            node.scale = SCNVector3(x: Float(pinchScale), y: Float(pinchScale), z: Float(pinchScale))
-//        }))
-//    }
 }
 
 

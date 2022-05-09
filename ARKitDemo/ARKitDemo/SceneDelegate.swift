@@ -18,8 +18,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
         let storyboard = UIStoryboard(name: "ListViewStoryboard", bundle: nil)
-        let listViewController = storyboard.instantiateViewController(withIdentifier: "ListViewStoryboard") as! ListViewController
-        let navigator = UINavigationController(rootViewController: listViewController)
+        let listViewController = storyboard.instantiateViewController(withIdentifier: "ListView") as! ListViewController
+        let navigator = UINavigationController.init(rootViewController: listViewController)
         
         self.window?.rootViewController = navigator
         self.window?.makeKeyAndVisible()

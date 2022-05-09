@@ -10,6 +10,11 @@ import ARKit
 
 let resourceFolder = "art.scnassets"
 
+enum View: String {
+    case ARSCNView = "ARSCNView"
+    case ARView = "ARView"
+}
+
 enum LineWith: Float {
     case small = 0.006
     case medium = 0.011

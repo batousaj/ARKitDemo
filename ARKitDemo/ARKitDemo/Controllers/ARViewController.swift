@@ -25,6 +25,8 @@ class ARViewController : UIViewController {
         super.viewDidLoad()
         self.setARView()
         self.setupSlider()
+        self.setupControlButton()
+        self.setupARConfiguration(isReset:true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -105,7 +107,7 @@ extension ARViewController {
         
         let configuration = ARWorldTrackingConfiguration()
         if #available(iOS 13.4, *) {
-            self.arView.debugOptions.insert([.showSceneUnderstanding,.showAnchorGeometry])
+            self.arView.debugOptions.insert([.showSceneUnderstanding])
             self.arView.environment.sceneUnderstanding.options.insert([.occlusion,.physics])
             configuration.sceneReconstruction = .meshWithClassification
         } else {
@@ -113,8 +115,11 @@ extension ARViewController {
         }
         
         configuration.environmentTexturing = .automatic
+        self.arView.session.delegate = self
         
         self.arView.session.run(configuration, options: runOptions)
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        arView.addGestureRecognizer(tapRecognizer)
     }
     
     func setNodeModel() -> SCNNode? {
@@ -126,7 +131,45 @@ extension ARViewController {
     }
     
     func resetScene() {
-        self.setupARConfiguration(isReset:true, runOptions: ARSession.RunOptions.removeExistingAnchors)
+        self.setupARConfiguration(isReset:true, runOptions: ARSession.RunOptions.resetSceneReconstruction)
         dismiss(animated: true)
+    }
+    
+    func sphere(radius: Float, color: UIColor) -> ModelEntity {
+        let sphere = ModelEntity(mesh: .generateSphere(radius: radius), materials: [SimpleMaterial(color: color, isMetallic: false)])
+        // Move sphere up by half its diameter so that it does not intersect with the mesh
+        sphere.position.y = radius
+        return sphere
+    }
+    
+}
+
+extension Scene {
+    // Add an anchor and remove it from the scene after the specified number of seconds.
+/// - Tag: AddAnchorExtension
+    func addAnchor(_ anchor: HasAnchoring, removeAfter seconds: TimeInterval) {
+        guard let model = anchor.children.first as? HasPhysics else {
+            return
+        }
+        
+        // Set up model to participate in physics simulation
+        if model.collision == nil {
+            model.generateCollisionShapes(recursive: true)
+            model.physicsBody = .init()
+        }
+        // ... but prevent it from being affected by simulation forces for now.
+        model.physicsBody?.mode = .kinematic
+        
+        addAnchor(anchor)
+        
+        if seconds > 0.0 {
+            // Making the physics body dynamic at this time will let the model be affected by forces.
+            Timer.scheduledTimer(withTimeInterval: seconds, repeats: false) { (timer) in
+                model.physicsBody?.mode = .dynamic
+            }
+            Timer.scheduledTimer(withTimeInterval: seconds + 3, repeats: false) { (timer) in
+                self.removeAnchor(anchor)
+            }
+        }
     }
 }

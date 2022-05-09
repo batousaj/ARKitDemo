@@ -158,6 +158,7 @@ class ViewController: UIViewController {
         self.view.addSubview(self.slideWith)
         self.slideWith.translatesAutoresizingMaskIntoConstraints = false
         self.slideWith.addTarget(self, action: #selector(onSliderChangeValue), for: .valueChanged)
+        self.slideWith.setValue(1.0, animated: true)
         slideWith.transform = slideWith.transform.rotated(by: CGFloat(1.5 * Float.pi))
         
         let contraints = [
@@ -197,6 +198,10 @@ extension ViewController {
     
     func sencePause() {
         scenceView.session.pause()
+    }
+    
+    func setMaxValueSlide() {
+        self.slideWith.setValue(1.0, animated: true)
     }
     
     func resetScene() {
