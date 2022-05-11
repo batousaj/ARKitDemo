@@ -8,8 +8,33 @@
 import Foundation
 import RealityKit
 import UIKit
+import SceneKit
 
 extension ARViewController {
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        print("touchesBegan")
+        guard let touchPoint = self.getTouchPoint(touches) else {
+            return;
+        }
+        self.touchPoint = touchPoint
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesMoved(touches, with: event)
+        print("touchesMoved")
+        guard let touchPoint = self.getTouchPoint(touches) else {
+            return;
+        }
+        self.touchPoint = touchPoint
+    }
+        
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        print("touchesEnded")
+        self.resetTouches()
+    }
     
     @objc func onClickReload() {
         self.resetScene()
@@ -19,17 +44,14 @@ extension ARViewController {
         
     }
     
-    @objc func handleTap(_ sender: UITapGestureRecognizer) {
-        // 1. Perform a ray cast against the mesh.
-        // Note: Ray-cast option ".estimatedPlane" with alignment ".any" also takes the mesh into account.
-        let tapLocation = sender.location(in: arView)
-        if let result = arView.raycast(from: tapLocation, allowing: .estimatedPlane, alignment: .any).first {
-            // ...
-            // 2. Visualize the intersection point of the ray with the real-world surface.
-            let resultAnchor = AnchorEntity(world: result.worldTransform)
-            resultAnchor.addChild(sphere(radius: 0.01, color: .lightGray))
-            arView.scene.addAnchor(resultAnchor, removeAfter: 0)
+    func getTouchPoint(_ touches: Set<UITouch>) -> CGPoint? {
+        guard let touch = touches.first else {
+            return nil
         }
+
+        let point = touch.location(in: arView)
+        
+        return point
     }
     
 }

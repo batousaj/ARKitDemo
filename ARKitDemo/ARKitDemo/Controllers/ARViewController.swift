@@ -18,6 +18,8 @@ class ARViewController : UIViewController {
     var slideWith = UISlider()
     
     var reloadBut = UIButton()
+    
+    var touchPoint: CGPoint = .zero
 
 // MARK: -- Load view override
     
@@ -118,8 +120,6 @@ extension ARViewController {
         self.arView.session.delegate = self
         
         self.arView.session.run(configuration, options: runOptions)
-        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
-        arView.addGestureRecognizer(tapRecognizer)
     }
     
     func setNodeModel() -> SCNNode? {
@@ -128,6 +128,10 @@ extension ARViewController {
             return sence.rootNode
         }
         return nil
+    }
+    
+    func resetTouches() {
+        touchPoint = .zero
     }
     
     func resetScene() {

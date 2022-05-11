@@ -14,27 +14,20 @@ extension ViewController {
 // MARK: - Sence Node Handler
         
     func addNode(_ node: SCNNode, at point: CGPoint) {
-//        guard let hitResult = scenceView.hitTest(point, types: .existingPlaneUsingExtent).first else { return }
-//        guard let anchor = hitResult.anchor as? ARPlaneAnchor, anchor.alignment == .horizontal else { return }
-//
-//        node.simdTransform = hitResult.worldTransform
+        let raycastQuery = scenceView.raycastQuery(from: point,
+                                               allowing: .estimatedPlane,
+                                              alignment: .any)
+
+        let results = scenceView.session.raycast(raycastQuery!)
+        if results.count > 0 {
+            let q = simd_quatf(results.first!.worldTransform)
+            print("z point : %f", q.axis.z)
+            node.simdTransform = results.first!.worldTransform
+        }
         addNodeToParentNode(node, to: scenceView.scene.rootNode)
     }
         
     func addNodeToParentNode(_ node: SCNNode, to parentNode: SCNNode) {
-//        if let lastNode = lastNode {
-//            let lastPosition = lastNode.position
-//            let newPosition = node.position
-//
-//            let x = lastPosition.x - newPosition.x
-//            let y = lastPosition.y - newPosition.y
-//            let z = lastPosition.z - newPosition.z
-//
-//            let distanceSquare = x * x + y * y + z * z
-//            let minimumDistanceSquare = minimumDistance * minimumDistance
-//
-//            guard minimumDistanceSquare < distanceSquare else { return }
-//        }
             
         let clonedNode = node.clone()
             
@@ -66,15 +59,20 @@ extension ViewController {
     
     func makeAnchor(at point: CGPoint) -> ARAnchor? {
         
-        let offset = unprojectedPosition(touch: point)
+        let offset = unprojectedPositionAtBegin(touch: point)
+        
+        if offset.x != 0 && offset.y != 0 && offset.z != 0 {
+            var blankTransform = matrix_float4x4(1)
+            blankTransform.columns.3.x = offset.x
+            blankTransform.columns.3.y = offset.y
+            blankTransform.columns.3.z = offset.z
 
-        var blankTransform = matrix_float4x4(1)
-//        var transform = hitNode.simdWorldTransform
-        blankTransform.columns.3.x = offset.x
-        blankTransform.columns.3.y = offset.y
-        blankTransform.columns.3.z = offset.z
+            return ARAnchor(transform: blankTransform)
+        }
+        
+        print("Can not create anchor")
 
-        return ARAnchor(transform: blankTransform)
+        return nil
     }
     
     func updateLine(for stroke: Stroke) {
@@ -108,15 +106,33 @@ extension ViewController {
         }
     }
 
+    func unprojectedPositionAtBegin(touch: CGPoint) -> SCNVector3 {
+        let raycastQuery = scenceView.raycastQuery(from: touch,
+                                               allowing: .estimatedPlane,
+                                              alignment: .any)
+
+        let results = scenceView.session.raycast(raycastQuery!)
+        if results.count > 0 {
+            let q = simd_quatf(results.first!.worldTransform)
+            print("z point : %f", q.axis.z)
+//            scenceView.pointOfView?.removeFromParentNode()
+//            self.hitNode?.position = SCNVector3Make(0, 0, q.axis.z)
+//            scenceView.pointOfView?.addChildNode(self.hitNode!)
+            let projectedOrigin = scenceView.projectPoint(hitNode!.worldPosition)
+            let offset = scenceView.unprojectPoint(SCNVector3Make(Float(touch.x), Float(touch.y), Float(projectedOrigin.z)))
+            return offset
+        }
+        return SCNVector3Zero
+    }
+    
     // Stroke Helper Methods
     func unprojectedPosition(touch: CGPoint) -> SCNVector3 {
         guard let hitNode = self.hitNode else {
             return SCNVector3Zero
         }
-
+        
         let projectedOrigin = scenceView.projectPoint(hitNode.worldPosition)
-        let offset = scenceView.unprojectPoint(SCNVector3Make(Float(touch.x), Float(touch.y), projectedOrigin.z))
-
+        let offset = scenceView.unprojectPoint(SCNVector3Make(Float(touch.x), Float(touch.y), Float(projectedOrigin.z)))
         return offset
     }
     

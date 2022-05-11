@@ -20,15 +20,26 @@ extension ViewController : ARSCNViewDelegate, ARSessionDelegate {
         print("renderer did Add Node")
         isNode = true
         if (self.isObject()) {
-            guard let node = self.setNodeModel() else {
-                return;
-            }
-            node.simdTransform = anchor.transform
-            if (isNode) {
-               self.addNode(node, at: touchPoint)
+            if touchPoint != .zero {
+                guard let node = self.setNodeModel() else {
+                    return;
+                }
+//                node.simdTransform = anchor.transform
+                if (isNode) {
+                   self.addNode(node, at: touchPoint)
+                }
             }
         } else {
-            node.simdTransform = anchor.transform
+            let raycastQuery = scenceView.raycastQuery(from: touchPoint,
+                                                   allowing: .estimatedPlane,
+                                                  alignment: .any)
+
+            let results = scenceView.session.raycast(raycastQuery!)
+            if results.count > 0 {
+                let q = simd_quatf(results.first!.worldTransform)
+                print("z point : %f", q.axis.z)
+                node.simdTransform = results.first!.worldTransform
+            }
             if let stroke = getStroke(for: anchor) {
                 print ("did add: \(node.position)")
                 print ("stroke first position: \(stroke.points[0])")
@@ -44,7 +55,7 @@ extension ViewController : ARSCNViewDelegate, ARSessionDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
         if (self.isObject()) {
-            
+
         } else {
             if let stroke = getStroke(for: anchor) {
                 print("Renderer did update node transform: \(node.transform) and anchorTranform: \(anchor.transform)")
@@ -61,21 +72,21 @@ extension ViewController : ARSCNViewDelegate, ARSessionDelegate {
     
     func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
         if (self.isObject()) {
-            
+
         } else {
             if let stroke = getStroke(for: node) {
-                
+
                 if (strokes.contains(stroke)) {
                     if let index = strokes.firstIndex(of: stroke) {
                         strokes.remove(at: index)
                     }
                 }
                 stroke.cleanup()
-                
+
                 print("Stroke removed.  Total strokes=\(strokes.count)")
             }
         }
-        
+
     }
     
     func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {

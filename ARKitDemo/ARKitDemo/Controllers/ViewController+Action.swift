@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import SceneKit
+import RealityKit
 
 extension ViewController {
     
@@ -19,21 +20,13 @@ extension ViewController {
             return;
         }
         self.touchPoint = touchPoint
-        
+
         switch mode {
             case .OBJECT :
                 self.lastNode = nil
-                
-//                guard let node = self.setNodeModel() else {
-//                    return;
-//                }
-            
                 if let anchor = makeAnchor(at:touchPoint) {
                     scenceView.session.add(anchor: anchor)
                 }
-//                if (isNode) {
-//                    self.addNode(node, at: touchPoint)
-//                }
                 break;
             case .DRAWING :
                 // begin a new stroke
@@ -67,10 +60,8 @@ extension ViewController {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
         print("touchesEnded")
-        if (mode == .DRAWING) {
-            self.resetTouches()
-            strokes.last?.resetMemory()
-        }
+        self.resetTouches()
+        strokes.last?.resetMemory()
     }
     
     func getTouchPoint(_ touches: Set<UITouch>) -> CGPoint? {
@@ -99,7 +90,6 @@ extension ViewController {
     
     @objc func onSliderChangeValue(_ slider: UISlider) {
         print("tHIEN vi: %d",slider.value)
-//        let pinchScale = round(recognizer.scale * 1000)/1000000
         let node_arm = lastNode
         node_arm?.runAction(.customAction(duration: 0, action: { node, progress in
             DispatchQueue.main.async {

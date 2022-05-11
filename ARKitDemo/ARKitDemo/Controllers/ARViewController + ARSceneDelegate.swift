@@ -20,6 +20,13 @@ extension ARViewController : ARSessionDelegate {
 
     func session(_ session: ARSession, didUpdate anchors: [ARAnchor]) {
         print("session: didUpdate")
+        if (touchPoint != .zero) {
+            if let result = arView.raycast(from: self.touchPoint, allowing: .estimatedPlane, alignment: .any).first {
+                let resultAnchor = AnchorEntity(world: result.worldTransform)
+                resultAnchor.addChild(sphere(radius: 0.01, color: .lightGray))
+                arView.scene.addAnchor(resultAnchor, removeAfter: 0)
+            }
+        }
     }
 
 

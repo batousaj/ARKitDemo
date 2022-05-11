@@ -144,7 +144,7 @@ class ViewController: UIViewController {
         NSLayoutConstraint.activate(contraints)
         
         hitNode = SCNNode()
-        hitNode!.position = SCNVector3Make(0, 0, -0.17)
+        hitNode!.position = SCNVector3Make(0, 0, -0.2)
         scenceView.pointOfView?.addChildNode(hitNode!)
         
         // Show statistics such as fps and timing information
@@ -191,6 +191,13 @@ extension ViewController {
             }
             objectNode.removeAll()
         }
+        
+        if #available(iOS 13.4, *) {
+            configuration.sceneReconstruction = .meshWithClassification
+        } else {
+            // Fallback on earlier versions
+        }
+        configuration.environmentTexturing = .automatic
         
         configuration.planeDetection = .horizontal
         scenceView.session.run(configuration, options: runOptions)
