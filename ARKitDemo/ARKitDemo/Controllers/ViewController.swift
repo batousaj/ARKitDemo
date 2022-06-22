@@ -45,6 +45,9 @@ class ViewController: UIViewController {
     
     var mode:ViewMode!
     
+    var touchStart:CGPoint!
+    var touchEnd:CGPoint!
+    
     
     
 // MARK: - Load View Override
@@ -226,13 +229,13 @@ extension ViewController {
     func setDrawing() {
         print("Mode change to Drawing")
         self.modeLabel.text = "Drawing"
-        self.mode = .DRAWING
+        self.mode = .TEXT
     }
     
     func setObject() {
         print("Mode change to Object Tracking")
         self.modeLabel.text = "Object"
-        self.mode = .OBJECT
+        self.mode = .STRIANGTH
     }
     
     func isObject() -> Bool {

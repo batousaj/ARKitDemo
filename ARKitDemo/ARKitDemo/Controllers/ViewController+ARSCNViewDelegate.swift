@@ -19,38 +19,45 @@ extension ViewController : ARSCNViewDelegate, ARSessionDelegate {
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         print("renderer did Add Node")
         isNode = true
-        if (self.isObject()) {
-            if touchPoint != .zero {
-                guard let node = self.setNodeModel() else {
-                    return;
+        switch mode {
+            case .OBJECT:
+                if touchPoint != .zero {
+                                guard let node = self.setNodeModel() else {
+                                    return;
+                                }
+                //                node.simdTransform = anchor.transform
+                                if (isNode) {
+                                   self.addNode(node, at: touchPoint)
+                                }
                 }
-//                node.simdTransform = anchor.transform
-                if (isNode) {
-                   self.addNode(node, at: touchPoint)
-                }
-            }
-        } else {
-            let raycastQuery = scenceView.raycastQuery(from: touchPoint,
-                                                   allowing: .estimatedPlane,
-                                                  alignment: .any)
+                break;
+            case .DRAWING :
+                if let raycastQuery = self.raycastQuery(point: touchPoint) {
+                    node.simdTransform = raycastQuery.worldTransform
+                    if let stroke = getStroke(for: anchor) {
+                            print ("did add: \(node.position)")
+                            print ("stroke first position: \(stroke.points[0])")
+                            stroke.node = node
 
-            let results = scenceView.session.raycast(raycastQuery!)
-            if results.count > 0 {
-                let q = simd_quatf(results.first!.worldTransform)
-                print("z point : %f", q.axis.z)
-                node.simdTransform = results.first!.worldTransform
-            }
-            if let stroke = getStroke(for: anchor) {
-                print ("did add: \(node.position)")
-                print ("stroke first position: \(stroke.points[0])")
-                stroke.node = node
-
-                DispatchQueue.main.async {
-                    self.updateGeometry(stroke)
+                            DispatchQueue.main.async {
+                                self.updateGeometry(stroke)
+                            }
+                    }
                 }
-            }
+                break
+            case .TEXT :
+                if touchPoint != .zero {
+                    if let results = self.raycastQuery(point: touchPoint) {
+                        if let textNode = self.generateNodes(raycast: results) {
+                            self.addNodeToParentNode(textNode, to: self.scenceView.scene.rootNode)
+                        }
+                    }
+                }
+                break
+            default:
+                break
         }
-        
+        self.resetTouches()
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {

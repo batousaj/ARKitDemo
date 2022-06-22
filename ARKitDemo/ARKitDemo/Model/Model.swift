@@ -24,6 +24,8 @@ enum LineWith: Float {
 enum ViewMode {
     case DRAWING
     case OBJECT
+    case STRIANGTH
+    case TEXT
 }
 
 enum Arrow: String {

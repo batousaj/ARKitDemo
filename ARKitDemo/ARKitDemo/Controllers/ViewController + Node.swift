@@ -24,18 +24,15 @@ extension ViewController {
             print("z point : %f", q.axis.z)
             node.simdTransform = results.first!.worldTransform
         }
-        addNodeToParentNode(node, to: scenceView.scene.rootNode)
+        addNodeToParentNode(node.clone(), to: scenceView.scene.rootNode)
     }
         
     func addNodeToParentNode(_ node: SCNNode, to parentNode: SCNNode) {
+        lastNode = node
             
-        let clonedNode = node.clone()
+        objectNode.append(node)
             
-        lastNode = clonedNode
-            
-        objectNode.append(clonedNode)
-            
-        parentNode.addChildNode(clonedNode)
+        parentNode.addChildNode(node)
     }
     
 // MARK: - Stroke Code
@@ -142,5 +139,35 @@ extension ViewController {
                 self.scenceView.session.remove(anchor: anchor)
             }
         }
+    }
+    
+    func raycastQuery(point: CGPoint) -> ARRaycastResult?{
+        let raycastQuery = scenceView.raycastQuery(from: point,
+                                               allowing: .estimatedPlane,
+                                              alignment: .any)
+                    
+        let results = scenceView.session.raycast(raycastQuery!)
+        if results.count > 0 {
+            return results.first!
+        }
+        return nil
+    }
+    
+    func generateNodes(raycast :ARRaycastResult) -> SCNNode? {
+        let sphereNode = SCNNode()
+        let sphereNodeGeometry = SCNSphere(radius: 0.01)
+        sphereNodeGeometry.firstMaterial?.diffuse.contents = UIColor.cyan
+        sphereNode.geometry = sphereNodeGeometry
+
+        let starterNode = sphereNode
+        starterNode.simdTransform = raycast.worldTransform
+        self.scenceView.scene.rootNode.addChildNode(starterNode.clone())
+
+        let distanceLabel = TextNode(text: "Thien Vu", colour: .red)
+        var blankTransform = raycast.worldTransform
+        blankTransform.columns.3.y = blankTransform.columns.3.y + 0.03
+        distanceLabel.simdTransform = blankTransform
+
+        return distanceLabel
     }
 }
