@@ -75,9 +75,12 @@ extension ViewController {
         if mode == .STRIANGTH {
             self.touchEnd = touchPoint
                     if let startRaycast = self.raycastQuery(point: self.touchStart), let stopRaycast = self.raycastQuery(point: self.touchEnd) {
-                        let cylinderLineNode = SCNGeometry.cylinderLine(from: startRaycast.worldTransform.position(),
-                                                                        to: stopRaycast.worldTransform.position(),
-                                                                    segments: 3)
+//                        let cylinderLineNode = SCNGeometry.cylinderLine(from: startRaycast.worldTransform.position(),
+//                                                                        to: stopRaycast.worldTransform.position(),
+//                                                                    segments: 3)
+//                        self.addNodeToParentNode(cylinderLineNode, to: self.scenceView.scene.rootNode)
+                        let cylinderLineNode = SCNGeometry.torus(at: startRaycast.worldTransform.position(),
+                                                                 segment: 40)
                         self.addNodeToParentNode(cylinderLineNode, to: self.scenceView.scene.rootNode)
             }
         }
@@ -158,6 +161,31 @@ extension SCNGeometry {
                                           atan2((to.y-from.y),(to.x-from.x)))
 
         return lineNode
+    }
+    
+    static func torus(at: SCNVector3,
+                      segment: Int) -> SCNNode {
+        
+        let x1 = at.x
+        let y1 = at.y
+        let z1 = at.z
+        
+        let torus = SCNTorus(ringRadius: 0.2, pipeRadius: 0.005)
+        torus.ringSegmentCount = segment
+        
+        torus.firstMaterial?.diffuse.contents = UIColor.red
+        
+        let torusNode = SCNNode(geometry: torus)
+        
+        torusNode.position = SCNVector3(x: x1 ,
+                                        y: y1 ,
+                                        z: z1 )
+        
+        torusNode.eulerAngles = SCNVector3(Float.pi / 2,
+                                           acos(z1),
+                                          atan2(y1,x1))
+
+        return torusNode
     }
 }
 

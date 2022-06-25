@@ -229,7 +229,7 @@ extension ViewController {
     func setDrawing() {
         print("Mode change to Drawing")
         self.modeLabel.text = "Drawing"
-        self.mode = .TEXT
+        self.mode = .STRIANGTH
     }
     
     func setObject() {
