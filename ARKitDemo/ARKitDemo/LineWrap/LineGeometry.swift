@@ -23,6 +23,7 @@ enum Radius: Float {
 
 
 class LineGeometry : SCNGeometry {
+    var color = UIColor()
     var vectors = [SCNVector3]()
     var sides = [Float]()
     var width: Float = 0
@@ -30,7 +31,7 @@ class LineGeometry : SCNGeometry {
     var endCapPosition: Float = 0
     
     /// Code currently all happens in init because I can't call init'ed functions until super.init is called, and you can only call one super.init.  I am relying on the built-in init(sources:elements:) convenience method for drawing the geometry
-    convenience init(vectors: [SCNVector3], sides: [Float], width: Float, lengths: [Float], endCapPosition: Float) {
+    convenience init(vectors: [SCNVector3], sides: [Float], width: Float, lengths: [Float], endCapPosition: Float, color: UIColor) {
         var indices = [Int32]()
         
         // Loop through center points
@@ -52,6 +53,7 @@ class LineGeometry : SCNGeometry {
         self.init(sources: [source], elements: [element])
         self.vectors = vectors
         self.sides = sides
+        self.color = color
         self.width = width
         self.lengths = lengths
         self.endCapPosition = endCapPosition
@@ -115,7 +117,12 @@ class LineGeometry : SCNGeometry {
             vertex.width = width
             vertex.length = lengths[i]
             vertex.endCap = endCapPosition
-            vertex.color = float4(1,1,1,1)
+            var red:CGFloat = 1.0
+            var green:CGFloat = 1.0
+            var blue:CGFloat = 1.0
+            var alpha:CGFloat = 1.0
+            color.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+            vertex.color = float4(Float(red),Float(green),Float(blue),Float(alpha))
 //            vertex.counters = stroke.mCounters[i]
             vertex.resolution = float2(Float(UIScreen.main.bounds.size.width), Float(UIScreen.main.bounds.size.height))
 

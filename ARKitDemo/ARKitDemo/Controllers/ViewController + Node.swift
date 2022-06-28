@@ -93,11 +93,13 @@ extension ViewController {
             let width = stroke.mLineWidth
             let lengths = stroke.mLength
             let totalLength = (stroke.drawnLocally) ? stroke.totalLength : stroke.animatedLength
+            let color = UIColor.systemBlue
             let line = LineGeometry(vectors: vectors,
                                     sides: sides,
                                     width: width,
                                     lengths: lengths,
-                                    endCapPosition: totalLength)
+                                    endCapPosition: totalLength,
+                                    color:color)
 
             stroke.node?.geometry = line
         }

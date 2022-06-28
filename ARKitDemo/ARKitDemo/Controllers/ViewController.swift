@@ -229,13 +229,13 @@ extension ViewController {
     func setDrawing() {
         print("Mode change to Drawing")
         self.modeLabel.text = "Drawing"
-        self.mode = .STRIANGTH
+        self.mode = .DRAWING
     }
     
     func setObject() {
         print("Mode change to Object Tracking")
         self.modeLabel.text = "Object"
-        self.mode = .STRIANGTH
+        self.mode = .DRAWING
     }
     
     func isObject() -> Bool {

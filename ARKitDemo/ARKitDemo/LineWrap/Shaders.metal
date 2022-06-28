@@ -146,7 +146,7 @@ fragment float4 basic_fragment(MyVertexOutput in [[stage_in]],
     float4 startCapColor = endCapTexture.sample(samplerStartCap, in.startCapTexCoord);
 
 
-    out = float4(1,1,1,1);
+    out = in.color;
 //    out = float4(scn_frame.random01, scn_frame.random01, scn_frame.random01, 1);
     out.a *= min(startCapColor.a, endCapColor.a);
     
